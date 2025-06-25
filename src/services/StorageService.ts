@@ -1,275 +1,288 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ConversationData, AnalysisResult } from '../types';
+import {
+  UserProfile,
+  Conversation,
+  OnboardingData,
+  AppState,
+  STORAGE_KEYS,
+  DEFAULT_AVATARS,
+  CommunicationMode,
+} from '../types';
 
-export class StorageService {
-  private static readonly CONVERSATIONS_KEY = '@conversations';
-  private static readonly SETTINGS_KEY = '@settings';
-  private static readonly CACHE_KEY = '@cache';
-
-  /**
-   * Save conversation data to local storage
-   */
-  static async saveConversation(conversation: ConversationData): Promise<void> {
+class StorageService {
+  // User Profile Management
+  async saveUserProfile(profile: UserProfile): Promise<void> {
     try {
-      const existingConversations = await this.getAllConversations();
-      const updatedConversations = [conversation, ...existingConversations];
-      
-      // Keep only the last 50 conversations to manage storage
-      const limitedConversations = updatedConversations.slice(0, 50);
-      
-      await AsyncStorage.setItem(
-        this.CONVERSATIONS_KEY,
-        JSON.stringify(limitedConversations)
-      );
+      await AsyncStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(profile));
     } catch (error) {
-      console.error('Failed to save conversation:', error);
-      throw new Error('Failed to save conversation data');
+      console.error('Error saving user profile:', error);
+      throw error;
     }
   }
 
-  /**
-   * Get all saved conversations
-   */
-  static async getAllConversations(): Promise<ConversationData[]> {
+  async getUserProfile(): Promise<UserProfile | null> {
     try {
-      const conversationsJson = await AsyncStorage.getItem(this.CONVERSATIONS_KEY);
-      if (!conversationsJson) return [];
-      
-      const conversations = JSON.parse(conversationsJson);
-      
-      // Convert timestamp strings back to Date objects
-      return conversations.map((conv: any) => ({
-        ...conv,
-        timestamp: new Date(conv.timestamp),
-        messages: conv.messages.map((msg: any) => ({
-          ...msg,
-          timestamp: new Date(msg.timestamp),
-        })),
-      }));
+      const data = await AsyncStorage.getItem(STORAGE_KEYS.USER_PROFILE);
+      if (data) {
+        const profile = JSON.parse(data);
+        // Convert date strings back to Date objects
+        profile.createdAt = new Date(profile.createdAt);
+        profile.updatedAt = new Date(profile.updatedAt);
+        if (profile.styleData?.lastUpdated) {
+          profile.styleData.lastUpdated = new Date(profile.styleData.lastUpdated);
+        }
+        return profile;
+      }
+      return null;
     } catch (error) {
-      console.error('Failed to load conversations:', error);
+      console.error('Error getting user profile:', error);
+      return null;
+    }
+  }
+
+  async createDefaultUserProfile(): Promise<UserProfile> {
+    const randomAvatar = DEFAULT_AVATARS[Math.floor(Math.random() * DEFAULT_AVATARS.length)];
+    const profile: UserProfile = {
+      id: `user_${Date.now()}`,
+      avatar: randomAvatar,
+      preferredMode: 'healthy_communication',
+      hasCompletedOnboarding: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    await this.saveUserProfile(profile);
+    return profile;
+  }
+
+  // Conversation Management
+  async saveConversations(conversations: Conversation[]): Promise<void> {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEYS.CONVERSATIONS, JSON.stringify(conversations));
+    } catch (error) {
+      console.error('Error saving conversations:', error);
+      throw error;
+    }
+  }
+
+  async getConversations(): Promise<Conversation[]> {
+    try {
+      const data = await AsyncStorage.getItem(STORAGE_KEYS.CONVERSATIONS);
+      if (data) {
+        const conversations = JSON.parse(data);
+        // Convert date strings back to Date objects
+        return conversations.map((conv: any) => ({
+          ...conv,
+          createdAt: new Date(conv.createdAt),
+          updatedAt: new Date(conv.updatedAt),
+          messages: conv.messages.map((msg: any) => ({
+            ...msg,
+            timestamp: new Date(msg.timestamp),
+          })),
+        }));
+      }
+      return [];
+    } catch (error) {
+      console.error('Error getting conversations:', error);
       return [];
     }
   }
 
-  /**
-   * Get conversation by ID
-   */
-  static async getConversationById(id: string): Promise<ConversationData | null> {
+  async saveConversation(conversation: Conversation): Promise<void> {
     try {
-      const conversations = await this.getAllConversations();
-      return conversations.find(conv => conv.id === id) || null;
-    } catch (error) {
-      console.error('Failed to get conversation by ID:', error);
-      return null;
-    }
-  }
-
-  /**
-   * Delete conversation by ID
-   */
-  static async deleteConversation(id: string): Promise<void> {
-    try {
-      const conversations = await this.getAllConversations();
-      const filteredConversations = conversations.filter(conv => conv.id !== id);
+      const conversations = await this.getConversations();
+      const existingIndex = conversations.findIndex(c => c.id === conversation.id);
       
-      await AsyncStorage.setItem(
-        this.CONVERSATIONS_KEY,
-        JSON.stringify(filteredConversations)
-      );
-    } catch (error) {
-      console.error('Failed to delete conversation:', error);
-      throw new Error('Failed to delete conversation');
-    }
-  }
-
-  /**
-   * Clear all conversations
-   */
-  static async clearAllConversations(): Promise<void> {
-    try {
-      await AsyncStorage.removeItem(this.CONVERSATIONS_KEY);
-    } catch (error) {
-      console.error('Failed to clear conversations:', error);
-      throw new Error('Failed to clear conversation data');
-    }
-  }
-
-  /**
-   * Save app settings
-   */
-  static async saveSettings(settings: AppSettings): Promise<void> {
-    try {
-      await AsyncStorage.setItem(this.SETTINGS_KEY, JSON.stringify(settings));
-    } catch (error) {
-      console.error('Failed to save settings:', error);
-      throw new Error('Failed to save settings');
-    }
-  }
-
-  /**
-   * Get app settings
-   */
-  static async getSettings(): Promise<AppSettings> {
-    try {
-      const settingsJson = await AsyncStorage.getItem(this.SETTINGS_KEY);
-      if (!settingsJson) return this.getDefaultSettings();
-      
-      return { ...this.getDefaultSettings(), ...JSON.parse(settingsJson) };
-    } catch (error) {
-      console.error('Failed to load settings:', error);
-      return this.getDefaultSettings();
-    }
-  }
-
-  /**
-   * Cache analysis results to avoid repeated API calls
-   */
-  static async cacheAnalysisResult(
-    conversationId: string,
-    analysisResult: AnalysisResult
-  ): Promise<void> {
-    try {
-      const cacheKey = `${this.CACHE_KEY}_${conversationId}`;
-      const cacheData = {
-        ...analysisResult,
-        cachedAt: new Date().toISOString(),
-      };
-      
-      await AsyncStorage.setItem(cacheKey, JSON.stringify(cacheData));
-    } catch (error) {
-      console.error('Failed to cache analysis result:', error);
-    }
-  }
-
-  /**
-   * Get cached analysis result
-   */
-  static async getCachedAnalysisResult(
-    conversationId: string
-  ): Promise<AnalysisResult | null> {
-    try {
-      const cacheKey = `${this.CACHE_KEY}_${conversationId}`;
-      const cachedJson = await AsyncStorage.getItem(cacheKey);
-      
-      if (!cachedJson) return null;
-      
-      const cachedData = JSON.parse(cachedJson);
-      const cachedAt = new Date(cachedData.cachedAt);
-      const now = new Date();
-      
-      // Cache expires after 1 hour
-      const oneHour = 60 * 60 * 1000;
-      if (now.getTime() - cachedAt.getTime() > oneHour) {
-        await AsyncStorage.removeItem(cacheKey);
-        return null;
+      if (existingIndex >= 0) {
+        conversations[existingIndex] = conversation;
+      } else {
+        conversations.push(conversation);
       }
       
-      // Remove cache metadata before returning
-      const { cachedAt: _, ...analysisResult } = cachedData;
-      return analysisResult;
+      await this.saveConversations(conversations);
     } catch (error) {
-      console.error('Failed to get cached analysis result:', error);
+      console.error('Error saving conversation:', error);
+      throw error;
+    }
+  }
+
+  async deleteConversation(conversationId: string): Promise<void> {
+    try {
+      const conversations = await this.getConversations();
+      const filteredConversations = conversations.filter(c => c.id !== conversationId);
+      await this.saveConversations(filteredConversations);
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+      throw error;
+    }
+  }
+
+  // Current Conversation Management
+  async saveCurrentConversation(conversation: Conversation | null): Promise<void> {
+    try {
+      if (conversation) {
+        await AsyncStorage.setItem(STORAGE_KEYS.CURRENT_CONVERSATION, JSON.stringify(conversation));
+      } else {
+        await AsyncStorage.removeItem(STORAGE_KEYS.CURRENT_CONVERSATION);
+      }
+    } catch (error) {
+      console.error('Error saving current conversation:', error);
+      throw error;
+    }
+  }
+
+  async getCurrentConversation(): Promise<Conversation | null> {
+    try {
+      const data = await AsyncStorage.getItem(STORAGE_KEYS.CURRENT_CONVERSATION);
+      if (data) {
+        const conversation = JSON.parse(data);
+        // Convert date strings back to Date objects
+        conversation.createdAt = new Date(conversation.createdAt);
+        conversation.updatedAt = new Date(conversation.updatedAt);
+        conversation.messages = conversation.messages.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp),
+        }));
+        return conversation;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error getting current conversation:', error);
       return null;
     }
   }
 
-  /**
-   * Get storage usage statistics
-   */
-  static async getStorageStats(): Promise<StorageStats> {
+  // Onboarding Management
+  async saveOnboardingData(data: OnboardingData): Promise<void> {
     try {
-      const conversations = await this.getAllConversations();
-      const allKeys = await AsyncStorage.getAllKeys();
-      const conversationKeys = allKeys.filter(key => key.startsWith(this.CONVERSATIONS_KEY));
-      const cacheKeys = allKeys.filter(key => key.startsWith(this.CACHE_KEY));
-      
-      return {
-        totalConversations: conversations.length,
-        totalCachedAnalyses: cacheKeys.length,
-        oldestConversation: conversations.length > 0 
-          ? conversations[conversations.length - 1].timestamp 
-          : null,
-        newestConversation: conversations.length > 0 
-          ? conversations[0].timestamp 
-          : null,
-      };
+      await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDING_STATUS, JSON.stringify(data));
     } catch (error) {
-      console.error('Failed to get storage stats:', error);
-      return {
-        totalConversations: 0,
-        totalCachedAnalyses: 0,
-        oldestConversation: null,
-        newestConversation: null,
-      };
+      console.error('Error saving onboarding data:', error);
+      throw error;
     }
   }
 
-  /**
-   * Clear expired cache entries
-   */
-  static async clearExpiredCache(): Promise<void> {
+  async getOnboardingData(): Promise<OnboardingData | null> {
     try {
-      const allKeys = await AsyncStorage.getAllKeys();
-      const cacheKeys = allKeys.filter(key => key.startsWith(this.CACHE_KEY));
-      
-      const expiredKeys: string[] = [];
-      const oneHour = 60 * 60 * 1000;
-      const now = new Date();
-      
-      for (const key of cacheKeys) {
-        try {
-          const cachedJson = await AsyncStorage.getItem(key);
-          if (cachedJson) {
-            const cached = JSON.parse(cachedJson);
-            const cachedAt = new Date(cached.cachedAt);
-            
-            if (now.getTime() - cachedAt.getTime() > oneHour) {
-              expiredKeys.push(key);
-            }
+      const data = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_STATUS);
+      return data ? JSON.parse(data) : null;
+    } catch (error) {
+      console.error('Error getting onboarding data:', error);
+      return null;
+    }
+  }
+
+  async completeOnboarding(): Promise<void> {
+    try {
+      await AsyncStorage.removeItem(STORAGE_KEYS.ONBOARDING_STATUS);
+    } catch (error) {
+      console.error('Error completing onboarding:', error);
+      throw error;
+    }
+  }
+
+  // App State Management
+  async saveAppState(state: AppState): Promise<void> {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEYS.APP_STATE, JSON.stringify(state));
+    } catch (error) {
+      console.error('Error saving app state:', error);
+      throw error;
+    }
+  }
+
+  async getAppState(): Promise<AppState | null> {
+    try {
+      const data = await AsyncStorage.getItem(STORAGE_KEYS.APP_STATE);
+      if (data) {
+        const state = JSON.parse(data);
+        // Convert date strings back to Date objects for nested objects
+        if (state.currentUser) {
+          state.currentUser.createdAt = new Date(state.currentUser.createdAt);
+          state.currentUser.updatedAt = new Date(state.currentUser.updatedAt);
+          if (state.currentUser.styleData?.lastUpdated) {
+            state.currentUser.styleData.lastUpdated = new Date(state.currentUser.styleData.lastUpdated);
           }
-        } catch (error) {
-          // If we can't parse the cached data, consider it expired
-          expiredKeys.push(key);
         }
+        if (state.currentConversation) {
+          state.currentConversation.createdAt = new Date(state.currentConversation.createdAt);
+          state.currentConversation.updatedAt = new Date(state.currentConversation.updatedAt);
+          state.currentConversation.messages = state.currentConversation.messages.map((msg: any) => ({
+            ...msg,
+            timestamp: new Date(msg.timestamp),
+          }));
+        }
+        if (state.conversations) {
+          state.conversations = state.conversations.map((conv: any) => ({
+            ...conv,
+            createdAt: new Date(conv.createdAt),
+            updatedAt: new Date(conv.updatedAt),
+            messages: conv.messages.map((msg: any) => ({
+              ...msg,
+              timestamp: new Date(msg.timestamp),
+            })),
+          }));
+        }
+        return state;
       }
-      
-      if (expiredKeys.length > 0) {
-        await AsyncStorage.multiRemove(expiredKeys);
-      }
+      return null;
     } catch (error) {
-      console.error('Failed to clear expired cache:', error);
+      console.error('Error getting app state:', error);
+      return null;
     }
   }
 
-  /**
-   * Get default app settings
-   */
-  private static getDefaultSettings(): AppSettings {
-    return {
-      apiKey: '',
-      autoSaveConversations: true,
-      analysisType: 'full',
-      notificationsEnabled: true,
-      theme: 'light',
-      maxStoredConversations: 50,
-    };
+  // Utility Methods
+  async clearAllData(): Promise<void> {
+    try {
+      await AsyncStorage.multiRemove([
+        STORAGE_KEYS.USER_PROFILE,
+        STORAGE_KEYS.CONVERSATIONS,
+        STORAGE_KEYS.CURRENT_CONVERSATION,
+        STORAGE_KEYS.ONBOARDING_STATUS,
+        STORAGE_KEYS.APP_STATE,
+      ]);
+    } catch (error) {
+      console.error('Error clearing all data:', error);
+      throw error;
+    }
+  }
+
+  async exportData(): Promise<string> {
+    try {
+      const allKeys = Object.values(STORAGE_KEYS);
+      const data = await AsyncStorage.multiGet(allKeys);
+      const exportData: Record<string, any> = {};
+      
+      data.forEach(([key, value]) => {
+        if (value) {
+          exportData[key] = JSON.parse(value);
+        }
+      });
+      
+      return JSON.stringify(exportData, null, 2);
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      throw error;
+    }
+  }
+
+  async importData(jsonData: string): Promise<void> {
+    try {
+      const data = JSON.parse(jsonData);
+      const storageData: [string, string][] = [];
+      
+      Object.entries(data).forEach(([key, value]) => {
+        if (Object.values(STORAGE_KEYS).includes(key as any)) {
+          storageData.push([key, JSON.stringify(value)]);
+        }
+      });
+      
+      await AsyncStorage.multiSet(storageData);
+    } catch (error) {
+      console.error('Error importing data:', error);
+      throw error;
+    }
   }
 }
 
-// Types for settings and storage stats
-export interface AppSettings {
-  apiKey: string;
-  autoSaveConversations: boolean;
-  analysisType: 'full' | 'quick' | 'suggestions';
-  notificationsEnabled: boolean;
-  theme: 'light' | 'dark';
-  maxStoredConversations: number;
-}
-
-export interface StorageStats {
-  totalConversations: number;
-  totalCachedAnalyses: number;
-  oldestConversation: Date | null;
-  newestConversation: Date | null;
-} 
+export default new StorageService(); 

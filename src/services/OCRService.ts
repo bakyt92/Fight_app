@@ -1,27 +1,18 @@
 import TextRecognition from '@react-native-ml-kit/text-recognition';
-import { OCRResult, ConversationData, Message, ToneAnalysis } from '../types';
+import { ImageProcessingResult } from '../types';
 
 export class OCRService {
   /**
    * Extract text from image using ML Kit text recognition
    */
-  static async extractTextFromImage(imageUri: string): Promise<OCRResult> {
+  static async extractTextFromImage(imageUri: string): Promise<ImageProcessingResult> {
     try {
       const result = await TextRecognition.recognize(imageUri);
       
       return {
-        text: result.text,
+        extractedText: result.text,
         confidence: this.calculateOverallConfidence(result.blocks),
-        blocks: result.blocks.map(block => ({
-          text: block.text,
-          boundingBox: {
-            x: block.frame.x,
-            y: block.frame.y,
-            width: block.frame.width,
-            height: block.frame.height,
-          },
-          confidence: block.confidence || 0.8,
-        })),
+        originalImage: imageUri,
       };
     } catch (error) {
       console.error('OCR extraction failed:', error);
@@ -30,191 +21,210 @@ export class OCRService {
   }
 
   /**
-   * Process OCR result and convert to conversation data
+   * Enhanced text extraction specifically for conversation screenshots
    */
-  static async processConversationFromOCR(
-    imageUri: string, 
-    ocrResult: OCRResult
-  ): Promise<ConversationData> {
-    const messages = this.parseMessagesFromText(ocrResult.text);
-    const participants = this.identifyParticipants(messages);
-    const toneAnalysis = this.analyzeTone(ocrResult.text);
-
-    return {
-      id: this.generateId(),
-      timestamp: new Date(),
-      messages,
-      participants,
-      conversationTone: toneAnalysis,
-      extractedText: ocrResult.text,
-      imageUri,
-    };
+  static async extractConversationFromImage(imageUri: string): Promise<ImageProcessingResult> {
+    try {
+      const result = await TextRecognition.recognize(imageUri);
+      
+      // Enhanced processing for conversation screenshots
+      const processedText = this.processConversationText(result.text);
+      const confidence = this.calculateOverallConfidence(result.blocks);
+      
+      return {
+        extractedText: processedText,
+        confidence,
+        originalImage: imageUri,
+      };
+    } catch (error) {
+      console.error('Conversation OCR extraction failed:', error);
+      throw new Error('Failed to extract conversation from image');
+    }
   }
 
   /**
-   * Parse individual messages from extracted text
+   * Process raw OCR text to better format conversation content
    */
-  private static parseMessagesFromText(text: string): Message[] {
-    const lines = text.split('\n').filter(line => line.trim().length > 0);
-    const messages: Message[] = [];
-    
-    // Basic parsing - can be enhanced with more sophisticated patterns
-    lines.forEach((line, index) => {
-      // Look for common messaging patterns: "Name: message" or timestamps
-      const messagePatterns = [
-        /^([A-Za-z\s]+):\s*(.+)$/,  // "Name: message"
-        /^(.+?)\s+(\d{1,2}:\d{2})\s*(.+)$/,  // "message time content"
-      ];
-
-      let sender = 'Unknown';
-      let content = line.trim();
-
-      for (const pattern of messagePatterns) {
-        const match = line.match(pattern);
-        if (match) {
-          sender = match[1].trim();
-          content = match[2].trim();
-          break;
-        }
-      }
-
-      if (content.length > 0) {
-        messages.push({
-          id: `msg_${index}`,
-          sender,
-          content,
-          timestamp: new Date(),
-          sentiment: this.analyzeSentiment(content),
-        });
-      }
-    });
-
-    return messages;
-  }
-
-  /**
-   * Identify unique participants in the conversation
-   */
-  private static identifyParticipants(messages: Message[]): string[] {
-    const participants = new Set<string>();
-    messages.forEach(msg => {
-      if (msg.sender !== 'Unknown') {
-        participants.add(msg.sender);
-      }
-    });
-    return Array.from(participants);
-  }
-
-  /**
-   * Basic tone analysis of conversation text
-   */
-  private static analyzeTone(text: string): ToneAnalysis {
-    const lowerText = text.toLowerCase();
-    
-    // Simple pattern-based tone analysis
-    const positiveWords = ['love', 'happy', 'great', 'good', 'wonderful', 'amazing'];
-    const negativeWords = ['hate', 'angry', 'bad', 'terrible', 'awful', 'stupid'];
-    const tensionWords = ['but', 'however', 'wrong', 'never', 'always'];
-
-    const positiveCount = positiveWords.filter(word => lowerText.includes(word)).length;
-    const negativeCount = negativeWords.filter(word => lowerText.includes(word)).length;
-    const tensionCount = tensionWords.filter(word => lowerText.includes(word)).length;
-
-    let overallTone: 'friendly' | 'neutral' | 'tense' | 'heated' = 'neutral';
-    let emotionalIntensity = 5;
-
-    if (negativeCount > positiveCount + 2) {
-      overallTone = 'heated';
-      emotionalIntensity = 8;
-    } else if (tensionCount > 2 || negativeCount > positiveCount) {
-      overallTone = 'tense';
-      emotionalIntensity = 6;
-    } else if (positiveCount > negativeCount + 1) {
-      overallTone = 'friendly';
-      emotionalIntensity = 3;
+  private static processConversationText(rawText: string): string {
+    if (!rawText || rawText.trim().length === 0) {
+      return '';
     }
 
-    return {
-      overallTone,
-      emotionalIntensity,
-      keyTopics: this.extractKeyTopics(text),
-      communicationPatterns: this.identifyPatterns(text),
-    };
+    // Clean up common OCR artifacts
+    let processedText = rawText
+      // Remove multiple spaces
+      .replace(/\s+/g, ' ')
+      // Remove common OCR artifacts
+      .replace(/[|]/g, ' ')
+      // Fix common character misrecognitions
+      .replace(/0/g, 'O') // Context-dependent, might need refinement
+      .replace(/1/g, 'I') // Context-dependent, might need refinement
+      .trim();
+
+    // Split into lines and clean each line
+    const lines = processedText.split('\n');
+    const cleanedLines = lines
+      .map(line => line.trim())
+      .filter(line => line.length > 0)
+      // Remove very short lines that are likely artifacts
+      .filter(line => line.length > 2);
+
+    // Try to identify conversation structure
+    const conversationLines = this.identifyConversationStructure(cleanedLines);
+    
+    return conversationLines.join('\n');
   }
 
   /**
-   * Basic sentiment analysis for individual messages
+   * Identify conversation structure from cleaned lines
    */
-  private static analyzeSentiment(text: string): 'positive' | 'negative' | 'neutral' {
-    const lowerText = text.toLowerCase();
-    const positiveWords = ['love', 'happy', 'great', 'good', 'wonderful', 'thanks'];
-    const negativeWords = ['hate', 'angry', 'bad', 'terrible', 'no', 'never'];
+  private static identifyConversationStructure(lines: string[]): string[] {
+    const structuredLines: string[] = [];
+    let currentSpeaker = '';
+    let currentMessage = '';
 
-    const positiveScore = positiveWords.filter(word => lowerText.includes(word)).length;
-    const negativeScore = negativeWords.filter(word => lowerText.includes(word)).length;
+    for (const line of lines) {
+      // Check if line contains timestamp patterns
+      const timePattern = /\d{1,2}:\d{2}|\d{1,2}\/\d{1,2}|\d{4}-\d{2}-\d{2}/;
+      if (timePattern.test(line)) {
+        // This might be a timestamp line, skip or process differently
+        continue;
+      }
 
-    if (positiveScore > negativeScore) return 'positive';
-    if (negativeScore > positiveScore) return 'negative';
-    return 'neutral';
+      // Check if line starts with a name pattern (common in messaging apps)
+      const namePattern = /^([A-Za-z\s]+)[:]/;
+      const nameMatch = line.match(namePattern);
+      
+      if (nameMatch) {
+        // Save previous message if exists
+        if (currentMessage.trim()) {
+          structuredLines.push(currentMessage.trim());
+        }
+        
+        currentSpeaker = nameMatch[1].trim();
+        currentMessage = line;
+      } else {
+        // Continue current message or start new one
+        if (currentMessage) {
+          currentMessage += ' ' + line;
+        } else {
+          currentMessage = line;
+        }
+      }
+    }
+
+    // Add the last message
+    if (currentMessage.trim()) {
+      structuredLines.push(currentMessage.trim());
+    }
+
+    return structuredLines.length > 0 ? structuredLines : lines;
   }
 
   /**
-   * Extract key topics from conversation
+   * Validate extracted text for conversation analysis
    */
-  private static extractKeyTopics(text: string): string[] {
-    // Simple keyword extraction - can be enhanced with NLP
+  static validateConversationText(extractedText: string): { isValid: boolean; message?: string } {
+    if (!extractedText || extractedText.trim().length === 0) {
+      return {
+        isValid: false,
+        message: 'No text could be extracted from the image. Please ensure the image contains readable text.',
+      };
+    }
+
+    // Check minimum length for meaningful conversation
+    if (extractedText.trim().length < 10) {
+      return {
+        isValid: false,
+        message: 'The extracted text is too short. Please provide an image with more conversation content.',
+      };
+    }
+
+    // Check for common conversation indicators
+    const conversationIndicators = [
+      /[:]/,  // Colon (speaker indicators)
+      /[?]/,  // Questions
+      /\b(you|your|me|my|I|we)\b/i,  // Personal pronouns
+      /\b(said|says|told|asked)\b/i,  // Communication verbs
+    ];
+
+    const hasConversationIndicators = conversationIndicators.some(pattern => 
+      pattern.test(extractedText)
+    );
+
+    if (!hasConversationIndicators) {
+      return {
+        isValid: false,
+        message: 'The extracted text doesn\'t appear to be a conversation. Please provide a screenshot of a conversation or chat.',
+      };
+    }
+
+    return { isValid: true };
+  }
+
+  /**
+   * Extract key phrases from conversation for quick analysis
+   */
+  static extractKeyPhrases(text: string): string[] {
     const words = text.toLowerCase()
-      .replace(/[^\w\s]/g, '')
+      .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
       .filter(word => word.length > 3);
-    
+
+    // Simple frequency analysis
     const wordFreq: { [key: string]: number } = {};
     words.forEach(word => {
       wordFreq[word] = (wordFreq[word] || 0) + 1;
     });
 
+    // Return top 10 most frequent words
     return Object.entries(wordFreq)
       .sort(([,a], [,b]) => b - a)
-      .slice(0, 5)
+      .slice(0, 10)
       .map(([word]) => word);
   }
 
   /**
-   * Identify communication patterns
-   */
-  private static identifyPatterns(text: string): string[] {
-    const patterns: string[] = [];
-    const lowerText = text.toLowerCase();
-
-    if (lowerText.includes('?')) patterns.push('Questions present');
-    if (lowerText.includes('!')) patterns.push('Emotional expressions');
-    if (lowerText.includes('sorry') || lowerText.includes('apologize')) {
-      patterns.push('Apologies detected');
-    }
-    if (lowerText.includes('but') || lowerText.includes('however')) {
-      patterns.push('Contradictions present');
-    }
-
-    return patterns;
-  }
-
-  /**
-   * Calculate overall confidence from text blocks
+   * Calculate overall confidence from ML Kit blocks
    */
   private static calculateOverallConfidence(blocks: any[]): number {
-    if (blocks.length === 0) return 0;
-    
-    const totalConfidence = blocks.reduce((sum, block) => 
-      sum + (block.confidence || 0.8), 0
-    );
-    
-    return totalConfidence / blocks.length;
+    if (!blocks || blocks.length === 0) return 0;
+
+    const totalConfidence = blocks.reduce((sum, block) => {
+      return sum + (block.confidence || 0.8); // Default confidence if not provided
+    }, 0);
+
+    return Math.min(totalConfidence / blocks.length, 1.0);
   }
 
   /**
-   * Generate unique ID
+   * Get text extraction statistics
+   */
+  static getExtractionStats(extractedText: string): {
+    characterCount: number;
+    wordCount: number;
+    lineCount: number;
+    estimatedReadingTime: number;
+  } {
+    const characterCount = extractedText.length;
+    const wordCount = extractedText.split(/\s+/).filter(word => word.length > 0).length;
+    const lineCount = extractedText.split('\n').filter(line => line.trim().length > 0).length;
+    
+    // Estimate reading time (average 200 words per minute)
+    const estimatedReadingTime = Math.ceil(wordCount / 200);
+
+    return {
+      characterCount,
+      wordCount,
+      lineCount,
+      estimatedReadingTime,
+    };
+  }
+
+  /**
+   * Generate unique ID for processing session
    */
   private static generateId(): string {
-    return `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `ocr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 } 
