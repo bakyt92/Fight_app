@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "CommunicationAssistApp.app"
-               BlueprintName = "CommunicationAssistApp"
-               ReferencedContainer = "container:CommunicationAssistApp.xcodeproj">
+               BuildableName = "FightApp.app"
+               BlueprintName = "FightApp"
+               ReferencedContainer = "container:FightApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "CommunicationAssistAppTests.xctest"
-               BlueprintName = "CommunicationAssistAppTests"
-               ReferencedContainer = "container:CommunicationAssistApp.xcodeproj">
+               BuildableName = "FightAppTests.xctest"
+               BlueprintName = "FightAppTests"
+               ReferencedContainer = "container:FightApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "CommunicationAssistApp.app"
-            BlueprintName = "CommunicationAssistApp"
-            ReferencedContainer = "container:CommunicationAssistApp.xcodeproj">
+            BuildableName = "FightApp.app"
+            BlueprintName = "FightApp"
+            ReferencedContainer = "container:FightApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "CommunicationAssistApp.app"
-            BlueprintName = "CommunicationAssistApp"
-            ReferencedContainer = "container:CommunicationAssistApp.xcodeproj">
+            BuildableName = "FightApp.app"
+            BlueprintName = "FightApp"
+            ReferencedContainer = "container:FightApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

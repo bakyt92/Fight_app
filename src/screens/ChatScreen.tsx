@@ -28,17 +28,7 @@ import {
 
 const { width } = Dimensions.get('window');
 
-interface ChatScreenProps {
-  route: {
-    params: {
-      conversationId?: string;
-      initialText?: string;
-      mode: CommunicationMode;
-    };
-  };
-}
-
-const ChatScreen: React.FC<ChatScreenProps> = () => {
+const ChatScreen: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { conversationId, initialText, mode } = route.params as any;
@@ -54,6 +44,44 @@ const ChatScreen: React.FC<ChatScreenProps> = () => {
   useEffect(() => {
     initializeChat();
   }, []);
+
+  const processUploadedImage = async (conversation: Conversation, imageUri: string) => {
+    try {
+      setIsLoading(true);
+
+      // Extract text from image using OCR
+      const ocrResult = await OCRService.extractConversationFromImage(imageUri);
+      const textValidation = OCRService.validateConversationText(ocrResult.extractedText);
+      
+      if (!textValidation.isValid) {
+        Alert.alert('Invalid Text', textValidation.message);
+        return;
+      }
+
+      // Create image message with extracted text
+      const imageMessage: Message = {
+        id: `msg_${Date.now()}_img`,
+        content: `📷 Uploaded conversation:\n\n${ocrResult.extractedText}`,
+        type: 'user',
+        timestamp: new Date(),
+        inputMethod: 'image',
+        originalImage: imageUri,
+        ocrExtractedText: ocrResult.extractedText,
+        mode: conversation.mode,
+      };
+
+      conversation.messages = [imageMessage];
+      conversation.title = `${conversation.mode === 'hard_fight' ? '🥊' : '💚'} Image Analysis`;
+
+      // Generate AI response with multiple options
+      await generateAIResponseWithOptions(conversation, ocrResult.extractedText);
+    } catch (error) {
+      console.error('Error processing uploaded image:', error);
+      Alert.alert('Error', 'Failed to process the uploaded image. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const initializeChat = async () => {
     try {
@@ -79,8 +107,12 @@ const ChatScreen: React.FC<ChatScreenProps> = () => {
           updatedAt: new Date(),
         };
 
-        // Add initial message if provided
-        if (initialText) {
+        // Check if an image was passed for processing
+        const { imageUri } = route.params as any;
+        if (imageUri) {
+          await processUploadedImage(newConversation, imageUri);
+        } else if (initialText) {
+          // Add initial text message if provided
           const initialMessage: Message = {
             id: `msg_${Date.now()}`,
             content: initialText,

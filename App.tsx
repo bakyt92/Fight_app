@@ -7,14 +7,15 @@
 
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { SafeAreaView, StyleSheet, StatusBar, ActivityIndicator, View } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { SafeAreaView, StyleSheet, StatusBar, ActivityIndicator, View, Text } from 'react-native';
 
 // Import screens
 import OnboardingScreen from './src/screens/OnboardingScreen';
 import MainScreen from './src/screens/MainScreen';
 import ChatScreen from './src/screens/ChatScreen';
+import AnalysisScreen from './src/screens/AnalysisScreen';
 import FightScreen from './src/screens/FightScreen';
 import HistoryScreen from './src/screens/HistoryScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
@@ -22,76 +23,122 @@ import SettingsScreen from './src/screens/SettingsScreen';
 // Import services
 import StorageService from './src/services/StorageService';
 
-const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+// Custom icon component using text symbols
+const TabIcon = ({ symbol, focused, color }: { symbol: string; focused: boolean; color: string }) => (
+  <Text style={{ 
+    fontSize: focused ? 26 : 22, 
+    color: color,
+    fontWeight: focused ? 'bold' : 'normal'
+  }}>
+    {symbol}
+  </Text>
+);
+
+// Stack Navigator for Fight tab (includes MainScreen and ChatScreen)
+const FightStackNavigator = () => {
+  return (
+    <Stack.Navigator 
+      screenOptions={{
+        headerShown: false, // We'll handle headers in individual screens
+      }}
+    >
+      <Stack.Screen name="MainScreen" component={MainScreen} />
+      <Stack.Screen 
+        name="AnalysisScreen" 
+        component={AnalysisScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen 
+        name="ChatScreen" 
+        component={ChatScreen}
+        options={{ headerShown: true, title: 'Chat' }}
+      />
+    </Stack.Navigator>
+  );
+};
 
 // Bottom Tab Navigator for main app
 const MainTabNavigator = () => {
   return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarActiveTintColor: '#007bff',
-        tabBarInactiveTintColor: '#6c757d',
-        tabBarStyle: {
-          backgroundColor: '#ffffff',
-          borderTopWidth: 1,
-          borderTopColor: '#e9ecef',
-          paddingTop: 8,
-          paddingBottom: 8,
-          height: 70,
-        },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '500',
-          marginTop: 4,
-        },
-        headerStyle: {
-          backgroundColor: '#ffffff',
-          borderBottomWidth: 1,
-          borderBottomColor: '#e9ecef',
-        },
-        headerTitleStyle: {
-          fontSize: 18,
-          fontWeight: 'bold',
-          color: '#212529',
-        },
-        headerTintColor: '#007bff',
-      }}
-    >
-      <Tab.Screen 
-        name="Home" 
-        component={MainScreen}
-        options={{
-          title: '🏠 Home',
-          tabBarLabel: 'Home',
-          headerShown: false, // MainScreen handles its own header
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={{
+          tabBarActiveTintColor: '#ff4444',
+          tabBarInactiveTintColor: '#6c757d',
+          tabBarStyle: {
+            backgroundColor: '#ffffff',
+            borderTopWidth: 1,
+            borderTopColor: '#e9ecef',
+            paddingTop: 8,
+            paddingBottom: 8,
+            height: 70,
+          },
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontWeight: '500',
+            marginTop: 4,
+          },
+          headerStyle: {
+            backgroundColor: '#ffffff',
+            borderBottomWidth: 1,
+            borderBottomColor: '#e9ecef',
+          },
+          headerTitleStyle: {
+            fontSize: 18,
+            fontWeight: 'bold',
+            color: '#212529',
+          },
+          headerTintColor: '#ff4444',
         }}
-      />
-      <Tab.Screen 
-        name="Legacy" 
-        component={FightScreen}
-        options={{
-          title: '🥊 Legacy Mode',
-          tabBarLabel: 'Legacy',
-        }}
-      />
-      <Tab.Screen 
-        name="History" 
-        component={HistoryScreen}
-        options={{
-          title: '📚 History',
-          tabBarLabel: 'History',
-        }}
-      />
-      <Tab.Screen 
-        name="Settings" 
-        component={SettingsScreen}
-        options={{
-          title: '⚙️ Settings',
-          tabBarLabel: 'Settings',
-        }}
-      />
-    </Tab.Navigator>
+      >
+        <Tab.Screen 
+          name="Fight" 
+          component={FightStackNavigator}
+          options={{
+            title: 'Fight Mode',
+            tabBarLabel: 'Fight',
+            headerShown: false, // Stack navigator handles headers
+            tabBarIcon: ({ color, focused }) => (
+              <TabIcon symbol="⚔️" focused={focused} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen 
+          name="History" 
+          component={HistoryScreen}
+          options={{
+            title: 'History',
+            tabBarLabel: 'History',
+            tabBarIcon: ({ color, focused }) => (
+              <TabIcon symbol="📋" focused={focused} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen 
+          name="Settings" 
+          component={SettingsScreen}
+          options={{
+            title: 'Settings',
+            tabBarLabel: 'Settings',
+            tabBarIcon: ({ color, focused }) => (
+              <TabIcon symbol="⚙️" focused={focused} color={color} />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+};
+
+// Simple Onboarding Wrapper
+const OnboardingWrapper = () => {
+  return (
+    <NavigationContainer>
+      <OnboardingScreen />
+    </NavigationContainer>
   );
 };
 
@@ -101,17 +148,31 @@ function App(): JSX.Element {
 
   useEffect(() => {
     checkOnboardingStatus();
+    
+    // Set up periodic check for onboarding completion
+    const interval = setInterval(() => {
+      checkOnboardingStatus();
+    }, 2000); // Check every 2 seconds
+    
+    return () => clearInterval(interval);
   }, []);
 
   const checkOnboardingStatus = async () => {
     try {
       const userProfile = await StorageService.getUserProfile();
-      setHasCompletedOnboarding(userProfile?.hasCompletedOnboarding || false);
+      const newStatus = userProfile?.hasCompletedOnboarding || false;
+      
+      // Only update if status changed to avoid unnecessary re-renders
+      if (newStatus !== hasCompletedOnboarding) {
+        setHasCompletedOnboarding(newStatus);
+      }
     } catch (error) {
       console.error('Error checking onboarding status:', error);
       setHasCompletedOnboarding(false);
     } finally {
-      setIsLoading(false);
+      if (isLoading) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -119,7 +180,7 @@ function App(): JSX.Element {
     return (
       <SafeAreaView style={styles.loadingContainer}>
         <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-        <ActivityIndicator size="large" color="#007bff" />
+        <ActivityIndicator size="large" color="#ff4444" />
       </SafeAreaView>
     );
   }
@@ -127,62 +188,11 @@ function App(): JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName={hasCompletedOnboarding ? "MainApp" : "Onboarding"}
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          {/* Onboarding Flow */}
-          <Stack.Screen 
-            name="Onboarding" 
-            component={OnboardingScreen}
-            options={{
-              gestureEnabled: false,
-            }}
-          />
-          
-          {/* Main App with Tabs */}
-          <Stack.Screen 
-            name="MainApp" 
-            component={MainTabNavigator}
-          />
-          
-          {/* Individual Screens */}
-          <Stack.Screen 
-            name="MainScreen" 
-            component={MainScreen}
-          />
-          
-          <Stack.Screen 
-            name="Chat" 
-            component={ChatScreen}
-            options={{
-              headerShown: false,
-              gestureEnabled: true,
-            }}
-          />
-          
-          {/* Processing and Text Input Screens (you can create these later) */}
-          <Stack.Screen 
-            name="ProcessingScreen" 
-            component={MainScreen} // Placeholder, replace with actual ProcessingScreen
-            options={{
-              title: 'Processing...',
-              headerShown: true,
-            }}
-          />
-          
-          <Stack.Screen 
-            name="TextInputScreen" 
-            component={ChatScreen} // This will handle text input mode
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      {hasCompletedOnboarding ? (
+        <MainTabNavigator />
+      ) : (
+        <OnboardingWrapper />
+      )}
     </SafeAreaView>
   );
 }

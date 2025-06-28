@@ -1,13 +1,21 @@
-import TextRecognition from '@react-native-ml-kit/text-recognition';
 import { ImageProcessingResult } from '../types';
+
+// Mock TextRecognition result interface
+interface MockTextRecognitionResult {
+  text: string;
+  blocks: Array<{ confidence: number }>;
+}
 
 export class OCRService {
   /**
-   * Extract text from image using ML Kit text recognition
+   * Mock implementation - Extract text from image using ML Kit text recognition
    */
   static async extractTextFromImage(imageUri: string): Promise<ImageProcessingResult> {
     try {
-      const result = await TextRecognition.recognize(imageUri);
+      // Mock delay to simulate processing
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const result = this.getMockTextRecognitionResult();
       
       return {
         extractedText: result.text,
@@ -21,11 +29,14 @@ export class OCRService {
   }
 
   /**
-   * Enhanced text extraction specifically for conversation screenshots
+   * Mock implementation - Enhanced text extraction specifically for conversation screenshots
    */
   static async extractConversationFromImage(imageUri: string): Promise<ImageProcessingResult> {
     try {
-      const result = await TextRecognition.recognize(imageUri);
+      // Mock delay to simulate processing
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      const result = this.getMockConversationResult();
       
       // Enhanced processing for conversation screenshots
       const processedText = this.processConversationText(result.text);
@@ -40,6 +51,67 @@ export class OCRService {
       console.error('Conversation OCR extraction failed:', error);
       throw new Error('Failed to extract conversation from image');
     }
+  }
+
+  /**
+   * Mock text recognition result for demo
+   */
+  private static getMockTextRecognitionResult(): MockTextRecognitionResult {
+    return {
+      text: `Demo extracted text from image.
+This is a sample conversation:
+John: Hey, how are you doing?
+Sarah: I'm good, thanks! How about you?
+John: Pretty busy with work lately.
+Sarah: I understand. Take care of yourself!`,
+      blocks: [
+        { confidence: 0.95 },
+        { confidence: 0.92 },
+        { confidence: 0.88 },
+        { confidence: 0.94 },
+      ]
+    };
+  }
+
+  /**
+   * Mock conversation result for demo
+   */
+  private static getMockConversationResult(): MockTextRecognitionResult {
+    const conversations = [
+      `Alex: I can't believe you said that in front of everyone!
+Sam: I didn't mean to embarrass you, I was just being honest.
+Alex: Honest? That felt more like an attack.
+Sam: I'm sorry if it came across that way.
+Alex: It really hurt my feelings.
+Sam: I understand, and I apologize. Can we talk about this?`,
+      
+      `Jordan: You never listen to what I'm saying.
+Taylor: That's not true, I do listen.
+Jordan: Then why do you always interrupt me?
+Taylor: I don't always interrupt... okay, maybe sometimes.
+Jordan: It makes me feel like my thoughts don't matter.
+Taylor: Your thoughts do matter to me. I'll try to be more patient.`,
+      
+      `Casey: I feel like we're growing apart.
+Morgan: What makes you say that?
+Casey: We barely talk anymore, and when we do, it's just small talk.
+Morgan: I've been stressed with work, but you're right.
+Casey: I miss how we used to share everything.
+Morgan: I miss that too. Let's make more time for each other.`,
+    ];
+    
+    const randomConversation = conversations[Math.floor(Math.random() * conversations.length)];
+    
+    return {
+      text: randomConversation,
+      blocks: [
+        { confidence: 0.91 },
+        { confidence: 0.89 },
+        { confidence: 0.93 },
+        { confidence: 0.87 },
+        { confidence: 0.95 },
+      ]
+    };
   }
 
   /**
@@ -198,7 +270,7 @@ export class OCRService {
   }
 
   /**
-   * Get text extraction statistics
+   * Get extraction statistics
    */
   static getExtractionStats(extractedText: string): {
     characterCount: number;
@@ -208,10 +280,8 @@ export class OCRService {
   } {
     const characterCount = extractedText.length;
     const wordCount = extractedText.split(/\s+/).filter(word => word.length > 0).length;
-    const lineCount = extractedText.split('\n').filter(line => line.trim().length > 0).length;
-    
-    // Estimate reading time (average 200 words per minute)
-    const estimatedReadingTime = Math.ceil(wordCount / 200);
+    const lineCount = extractedText.split('\n').length;
+    const estimatedReadingTime = Math.ceil(wordCount / 200); // Assuming 200 words per minute
 
     return {
       characterCount,
@@ -222,9 +292,9 @@ export class OCRService {
   }
 
   /**
-   * Generate unique ID for processing session
+   * Generate unique ID for extraction results
    */
   private static generateId(): string {
-    return `ocr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }
 } 

@@ -1,4 +1,4 @@
-package com.communicationassistapp;
+package com.fightapp;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

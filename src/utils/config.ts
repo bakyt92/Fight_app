@@ -4,7 +4,7 @@
 
 export const CONFIG = {
   // App Information
-  APP_NAME: 'Communication Assistant',
+  APP_NAME: ' Fight App',
   VERSION: '1.0.0',
   
   // API Configuration
@@ -97,7 +97,7 @@ export const SUCCESS_MESSAGES = {
  * Default prompts and responses
  */
 export const DEFAULT_CONTENT = {
-  WELCOME_MESSAGE: 'Welcome to Communication Assistant! Upload a conversation screenshot to get started.',
+  WELCOME_MESSAGE: 'Welcome to Fight App! Upload a conversation screenshot to get started.',
   
   LOADING_MESSAGES: [
     'Extracting text from image...',

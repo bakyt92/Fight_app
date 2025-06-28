@@ -82,8 +82,8 @@ const MainScreen: React.FC = () => {
         return;
       }
 
-      // Navigate to processing screen with image data
-      (navigation as any).navigate('ProcessingScreen', {
+      // Navigate to analysis screen with image data
+      (navigation as any).navigate('AnalysisScreen', {
         imageUri: imageResult.uri,
         mode: currentMode,
       });
@@ -94,8 +94,9 @@ const MainScreen: React.FC = () => {
   };
 
   const handleTextInput = () => {
-    (navigation as any).navigate('TextInputScreen', {
+    (navigation as any).navigate('ChatScreen', {
       mode: currentMode,
+      initialText: '',
     });
   };
 
@@ -151,7 +152,7 @@ const MainScreen: React.FC = () => {
 
       {/* Main Content */}
       <View style={styles.mainContent}>
-        <Text style={styles.welcomeTitle}>Communication Assistant</Text>
+        <Text style={styles.welcomeTitle}>Fight Assistant</Text>
         <Text style={[styles.modeDescription, { color: modeInfo.color }]}>
           {modeInfo.subtitle}
         </Text>

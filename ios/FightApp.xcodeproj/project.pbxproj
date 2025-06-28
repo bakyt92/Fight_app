@@ -7,13 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* CommunicationAssistAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* CommunicationAssistAppTests.m */; };
+		00E356F31AD99517003FC87E /* FightApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* FightApp.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2AE3C3B94C06E8B9905F4DD5 /* libPods-CommunicationAssistApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A646181DD51D5F59229220C9 /* libPods-CommunicationAssistApp.a */; };
+		2AE3C3B94C06E8B9905F4DD5 /* libPods-FightApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A646181DD51D5F59229220C9 /* libPods-FightApp.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		AEBFA27A20B2481E0ABB7AF2 /* libPods-CommunicationAssistApp-CommunicationAssistAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EF6CC7CCAF5D97D5202DE61B /* libPods-CommunicationAssistApp-CommunicationAssistAppTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -22,28 +21,25 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = CommunicationAssistApp;
+			remoteInfo = FightApp;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00E356EE1AD99517003FC87E /* CommunicationAssistAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CommunicationAssistAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* FightApp.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FightApp.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* CommunicationAssistAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CommunicationAssistAppTests.m; sourceTree = "<group>"; };
-		07310BF1D3F0A9CD5405719D /* Pods-CommunicationAssistApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommunicationAssistApp.release.xcconfig"; path = "Target Support Files/Pods-CommunicationAssistApp/Pods-CommunicationAssistApp.release.xcconfig"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* CommunicationAssistApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CommunicationAssistApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = CommunicationAssistApp/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = CommunicationAssistApp/AppDelegate.mm; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = CommunicationAssistApp/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = CommunicationAssistApp/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = CommunicationAssistApp/main.m; sourceTree = "<group>"; };
-		1B112E4F8007286703CD01FC /* Pods-CommunicationAssistApp-CommunicationAssistAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommunicationAssistApp-CommunicationAssistAppTests.debug.xcconfig"; path = "Target Support Files/Pods-CommunicationAssistApp-CommunicationAssistAppTests/Pods-CommunicationAssistApp-CommunicationAssistAppTests.debug.xcconfig"; sourceTree = "<group>"; };
-		625C8D9282355F9B2476C600 /* Pods-CommunicationAssistApp-CommunicationAssistAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommunicationAssistApp-CommunicationAssistAppTests.release.xcconfig"; path = "Target Support Files/Pods-CommunicationAssistApp-CommunicationAssistAppTests/Pods-CommunicationAssistApp-CommunicationAssistAppTests.release.xcconfig"; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = CommunicationAssistApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		A646181DD51D5F59229220C9 /* libPods-CommunicationAssistApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CommunicationAssistApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CA9F9119A199C695040D9CED /* Pods-CommunicationAssistApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommunicationAssistApp.debug.xcconfig"; path = "Target Support Files/Pods-CommunicationAssistApp/Pods-CommunicationAssistApp.debug.xcconfig"; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* FightApp.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FightApp.m; sourceTree = "<group>"; };
+		07310BF1D3F0A9CD5405719D /* Pods-FightApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FightApp.release.xcconfig"; path = "Target Support Files/Pods-FightApp/Pods-FightApp.release.xcconfig"; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* FightApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FightApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = FightApp/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = FightApp/AppDelegate.mm; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = FightApp/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = FightApp/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = FightApp/main.m; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = FightApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		A646181DD51D5F59229220C9 /* libPods-FightApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FightApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA9F9119A199C695040D9CED /* Pods-FightApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FightApp.debug.xcconfig"; path = "Target Support Files/Pods-FightApp/Pods-FightApp.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		EF6CC7CCAF5D97D5202DE61B /* libPods-CommunicationAssistApp-CommunicationAssistAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CommunicationAssistApp-CommunicationAssistAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,7 +47,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AEBFA27A20B2481E0ABB7AF2 /* libPods-CommunicationAssistApp-CommunicationAssistAppTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,20 +54,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2AE3C3B94C06E8B9905F4DD5 /* libPods-CommunicationAssistApp.a in Frameworks */,
+				2AE3C3B94C06E8B9905F4DD5 /* libPods-FightApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		00E356EF1AD99517003FC87E /* CommunicationAssistAppTests */ = {
+		00E356EF1AD99517003FC87E /* FightApp */ = {
 			isa = PBXGroup;
 			children = (
-				00E356F21AD99517003FC87E /* CommunicationAssistAppTests.m */,
+				00E356F21AD99517003FC87E /* FightApp.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
-			path = CommunicationAssistAppTests;
+			path = FightApp;
 			sourceTree = "<group>";
 		};
 		00E356F01AD99517003FC87E /* Supporting Files */ = {
@@ -83,7 +78,7 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		13B07FAE1A68108700A75B9A /* CommunicationAssistApp */ = {
+		13B07FAE1A68108700A75B9A /* FightApp */ = {
 			isa = PBXGroup;
 			children = (
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -93,15 +88,14 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
-			name = CommunicationAssistApp;
+			name = FightApp;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				A646181DD51D5F59229220C9 /* libPods-CommunicationAssistApp.a */,
-				EF6CC7CCAF5D97D5202DE61B /* libPods-CommunicationAssistApp-CommunicationAssistAppTests.a */,
+				A646181DD51D5F59229220C9 /* libPods-FightApp.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -116,9 +110,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* CommunicationAssistApp */,
+				13B07FAE1A68108700A75B9A /* FightApp */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				00E356EF1AD99517003FC87E /* CommunicationAssistAppTests */,
+				00E356EF1AD99517003FC87E /* FightApp */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
@@ -131,8 +125,8 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* CommunicationAssistApp.app */,
-				00E356EE1AD99517003FC87E /* CommunicationAssistAppTests.xctest */,
+				13B07F961A680F5B00A75B9A /* FightApp.app */,
+				00E356EE1AD99517003FC87E /* FightApp.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -140,10 +134,8 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				CA9F9119A199C695040D9CED /* Pods-CommunicationAssistApp.debug.xcconfig */,
-				07310BF1D3F0A9CD5405719D /* Pods-CommunicationAssistApp.release.xcconfig */,
-				1B112E4F8007286703CD01FC /* Pods-CommunicationAssistApp-CommunicationAssistAppTests.debug.xcconfig */,
-				625C8D9282355F9B2476C600 /* Pods-CommunicationAssistApp-CommunicationAssistAppTests.release.xcconfig */,
+				CA9F9119A199C695040D9CED /* Pods-FightApp.debug.xcconfig */,
+				07310BF1D3F0A9CD5405719D /* Pods-FightApp.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -151,30 +143,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* CommunicationAssistAppTests */ = {
+		00E356ED1AD99517003FC87E /* FightApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "CommunicationAssistAppTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "FightApp" */;
 			buildPhases = (
-				8A85E2B59CCA8B16917DBE5D /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				D5E3C9A2981C2A01A518250F /* [CP] Embed Pods Frameworks */,
-				49531DA5832A8464047035C0 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = CommunicationAssistAppTests;
-			productName = CommunicationAssistAppTests;
-			productReference = 00E356EE1AD99517003FC87E /* CommunicationAssistAppTests.xctest */;
+			name = FightApp;
+			productName = FightApp;
+			productReference = 00E356EE1AD99517003FC87E /* FightApp.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* CommunicationAssistApp */ = {
+		13B07F861A680F5B00A75B9A /* FightApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CommunicationAssistApp" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "FightApp" */;
 			buildPhases = (
 				4DB90BA08BF39BCB9D5023B6 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
@@ -189,9 +178,9 @@
 			);
 			dependencies = (
 			);
-			name = CommunicationAssistApp;
-			productName = CommunicationAssistApp;
-			productReference = 13B07F961A680F5B00A75B9A /* CommunicationAssistApp.app */;
+			name = FightApp;
+			productName = FightApp;
+			productReference = 13B07F961A680F5B00A75B9A /* FightApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -211,7 +200,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CommunicationAssistApp" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "FightApp" */;
 			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -224,8 +213,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* CommunicationAssistApp */,
-				00E356ED1AD99517003FC87E /* CommunicationAssistAppTests */,
+				13B07F861A680F5B00A75B9A /* FightApp */,
+				00E356ED1AD99517003FC87E /* FightApp */,
 			);
 		};
 /* End PBXProject section */
@@ -266,23 +255,6 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		49531DA5832A8464047035C0 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CommunicationAssistApp-CommunicationAssistAppTests/Pods-CommunicationAssistApp-CommunicationAssistAppTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CommunicationAssistApp-CommunicationAssistAppTests/Pods-CommunicationAssistApp-CommunicationAssistAppTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CommunicationAssistApp-CommunicationAssistAppTests/Pods-CommunicationAssistApp-CommunicationAssistAppTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		4DB90BA08BF39BCB9D5023B6 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -298,29 +270,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CommunicationAssistApp-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8A85E2B59CCA8B16917DBE5D /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CommunicationAssistApp-CommunicationAssistAppTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-FightApp-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -333,32 +283,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CommunicationAssistApp/Pods-CommunicationAssistApp-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-FightApp/Pods-FightApp-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CommunicationAssistApp/Pods-CommunicationAssistApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-FightApp/Pods-FightApp-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CommunicationAssistApp/Pods-CommunicationAssistApp-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D5E3C9A2981C2A01A518250F /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CommunicationAssistApp-CommunicationAssistAppTests/Pods-CommunicationAssistApp-CommunicationAssistAppTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CommunicationAssistApp-CommunicationAssistAppTests/Pods-CommunicationAssistApp-CommunicationAssistAppTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CommunicationAssistApp-CommunicationAssistAppTests/Pods-CommunicationAssistApp-CommunicationAssistAppTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FightApp/Pods-FightApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		DA998249EFA53BED097DBE8B /* [CP] Embed Pods Frameworks */ = {
@@ -367,15 +300,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CommunicationAssistApp/Pods-CommunicationAssistApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-FightApp/Pods-FightApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CommunicationAssistApp/Pods-CommunicationAssistApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-FightApp/Pods-FightApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CommunicationAssistApp/Pods-CommunicationAssistApp-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FightApp/Pods-FightApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -404,7 +337,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00E356F31AD99517003FC87E /* CommunicationAssistAppTests.m in Sources */,
+				00E356F31AD99517003FC87E /* FightApp.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -422,7 +355,7 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* CommunicationAssistApp */;
+			target = 13B07F861A680F5B00A75B9A /* FightApp */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -430,14 +363,13 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1B112E4F8007286703CD01FC /* Pods-CommunicationAssistApp-CommunicationAssistAppTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = CommunicationAssistAppTests/Info.plist;
+				INFOPLIST_FILE = FightApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -451,17 +383,16 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CommunicationAssistApp.app/CommunicationAssistApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FightApp.app/FightApp";
 			};
 			name = Debug;
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 625C8D9282355F9B2476C600 /* Pods-CommunicationAssistApp-CommunicationAssistAppTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				INFOPLIST_FILE = CommunicationAssistAppTests/Info.plist;
+				INFOPLIST_FILE = FightApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -475,19 +406,19 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CommunicationAssistApp.app/CommunicationAssistApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FightApp.app/FightApp";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CA9F9119A199C695040D9CED /* Pods-CommunicationAssistApp.debug.xcconfig */;
+			baseConfigurationReference = CA9F9119A199C695040D9CED /* Pods-FightApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = CommunicationAssistApp/Info.plist;
+				INFOPLIST_FILE = FightApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -499,7 +430,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = CommunicationAssistApp;
+				PRODUCT_NAME = FightApp;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -508,12 +439,12 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 07310BF1D3F0A9CD5405719D /* Pods-CommunicationAssistApp.release.xcconfig */;
+			baseConfigurationReference = 07310BF1D3F0A9CD5405719D /* Pods-FightApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = CommunicationAssistApp/Info.plist;
+				INFOPLIST_FILE = FightApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -525,7 +456,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = CommunicationAssistApp;
+				PRODUCT_NAME = FightApp;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -673,7 +604,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "CommunicationAssistAppTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "FightApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -682,7 +613,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CommunicationAssistApp" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "FightApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -691,7 +622,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CommunicationAssistApp" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "FightApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

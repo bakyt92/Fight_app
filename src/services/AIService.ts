@@ -1,4 +1,3 @@
-import OpenAI from 'openai';
 import { 
   ConversationData, 
   AIRequest, 
@@ -11,114 +10,209 @@ import {
 } from '../types';
 
 export class AIService {
-  private static openai: OpenAI;
+  private static initialized = false;
   
   /**
-   * Initialize OpenAI client with API key
+   * Mock initialization - no actual API key needed for demo
    */
   static initialize(apiKey: string) {
-    this.openai = new OpenAI({
-      apiKey: apiKey,
-    });
+    console.log('Mock AI Service initialized');
+    this.initialized = true;
   }
 
   /**
-   * Analyze conversation and provide constructive insights
+   * Mock analyze conversation and provide constructive insights
    */
   static async analyzeConversation(
     conversationData: ConversationData,
     analysisType: 'full' | 'quick' | 'suggestions' = 'full'
   ): Promise<AIResponse> {
-    if (!this.openai) {
+    if (!this.initialized) {
       throw new Error('AI Service not initialized. Call initialize() with your API key first.');
     }
 
-    const prompt = this.buildAnalysisPrompt(conversationData, analysisType);
+    // Mock delay to simulate API call
+    await new Promise(resolve => setTimeout(resolve, 2000));
     
-    try {
-      const completion = await this.openai.chat.completions.create({
-        model: 'gpt-4',
-        messages: [
-          { role: 'system', content: this.getSystemPrompt() },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 1500,
-      });
-
-      const responseContent = completion.choices[0]?.message?.content || '';
-      return this.parseAIResponse(responseContent);
-    } catch (error) {
-      console.error('AI analysis failed:', error);
-      throw new Error('Failed to analyze conversation');
-    }
+    return this.getMockAnalysisResponse(conversationData, analysisType);
   }
 
   /**
-   * Generate response suggestions for specific message
+   * Mock generate response suggestions for specific message
    */
   static async generateResponseSuggestions(
     conversationContext: string,
     targetMessage: string
   ): Promise<ResponseSuggestion[]> {
-    if (!this.openai) {
+    if (!this.initialized) {
       throw new Error('AI Service not initialized');
     }
 
-    const prompt = `
-Conversation Context:
-${conversationContext}
+    // Mock delay to simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
 
-Target Message: "${targetMessage}"
-
-Please suggest 3-5 constructive response options that would help improve communication and understanding. Each suggestion should be:
-- Respectful and empathetic
-- Clear and direct
-- Aimed at resolving misunderstandings
-- Appropriate for the conversation tone
-
-Format your response as JSON with this structure:
-{
-  "suggestions": [
-    {
-      "type": "empathy|clarification|solution|acknowledgment",
-      "content": "suggested response text",
-      "rationale": "why this response would be helpful",
-      "tone": "supportive|neutral|assertive"
-    }
-  ]
-}
-    `;
-
-    try {
-      const completion = await this.openai.chat.completions.create({
-        model: 'gpt-4',
-        messages: [
-          { role: 'system', content: this.getSystemPrompt() },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.6,
-        max_tokens: 800,
-      });
-
-      const responseContent = completion.choices[0]?.message?.content || '';
-      const parsed = JSON.parse(responseContent);
-      
-      return parsed.suggestions.map((s: any, index: number) => ({
-        id: `suggestion_${index}`,
-        type: s.type,
-        content: s.content,
-        rationale: s.rationale,
-        tone: s.tone,
-      }));
-    } catch (error) {
-      console.error('Response generation failed:', error);
-      return this.getFallbackSuggestions();
-    }
+    return this.getMockResponseSuggestions(targetMessage);
   }
 
   /**
-   * Get system prompt for AI interactions
+   * Get mock analysis response based on conversation data
+   */
+  private static getMockAnalysisResponse(
+    conversationData: ConversationData, 
+    analysisType: string
+  ): AIResponse {
+    const mockResponses = {
+      full: {
+        analysis: "This conversation shows signs of emotional tension and miscommunication. Both parties seem to care about each other but are struggling to express their feelings effectively. There's an opportunity to rebuild understanding through empathetic listening and clear communication.",
+        suggestions: [
+          {
+            id: "sug_1",
+            type: "empathy" as const,
+            content: "I can see that you're feeling hurt, and I want to understand your perspective better. Can you help me understand what I did that made you feel this way?",
+            rationale: "This acknowledges the other person's emotions and shows willingness to understand their viewpoint",
+            tone: "supportive" as const,
+          },
+          {
+            id: "sug_2", 
+            type: "clarification" as const,
+            content: "I think we might be misunderstanding each other. Let me share what I heard, and you can tell me if I got it right.",
+            rationale: "This helps prevent further miscommunication by ensuring both parties are on the same page",
+            tone: "neutral" as const,
+          },
+          {
+            id: "sug_3",
+            type: "solution" as const,
+            content: "I care about our relationship and want to work through this together. What can we do to move forward in a way that works for both of us?",
+            rationale: "This focuses on collaborative problem-solving and reinforces the relationship's importance",
+            tone: "supportive" as const,
+          }
+        ],
+        insights: [
+          {
+            id: "insight_1",
+            category: "emotion" as const,
+            title: "Emotional Overwhelm",
+            description: "One or both parties appear to be experiencing strong emotions that may be affecting clear communication",
+            importance: "high" as const,
+          },
+          {
+            id: "insight_2",
+            category: "pattern" as const,
+            title: "Communication Pattern",
+            description: "There's a pattern of defensive responses that could be escalating the conflict",
+            importance: "medium" as const,
+          },
+          {
+            id: "insight_3",
+            category: "opportunity" as const,
+            title: "Resolution Opportunity",
+            description: "Both parties show signs of caring, which creates a foundation for resolution",
+            importance: "high" as const,
+          }
+        ],
+        confidence: 0.85,
+      },
+      quick: {
+        analysis: "Quick analysis: This conversation shows tension but also underlying care between participants. Focus on empathetic listening and clear communication.",
+        suggestions: [
+          {
+            id: "quick_sug_1",
+            type: "empathy" as const,
+            content: "I hear that you're upset, and I want to understand why.",
+            rationale: "Shows willingness to listen and understand",
+            tone: "supportive" as const,
+          }
+        ],
+        insights: [
+          {
+            id: "quick_insight_1",
+            category: "emotion" as const,
+            title: "Emotional Tension",
+            description: "Strong emotions are present and need to be addressed",
+            importance: "high" as const,
+          }
+        ],
+        confidence: 0.75,
+      },
+      suggestions: {
+        analysis: "Focus on constructive responses that acknowledge feelings and promote understanding.",
+        suggestions: [
+          {
+            id: "focus_sug_1",
+            type: "acknowledgment" as const,
+            content: "I can see this is really important to you.",
+            rationale: "Validates the other person's feelings and concerns",
+            tone: "supportive" as const,
+          },
+          {
+            id: "focus_sug_2",
+            type: "clarification" as const,
+            content: "Help me understand what you need from me right now.",
+            rationale: "Invites clear communication about needs and expectations",
+            tone: "neutral" as const,
+          }
+        ],
+        insights: [],
+        confidence: 0.80,
+      }
+    };
+
+    return mockResponses[analysisType as keyof typeof mockResponses] || mockResponses.full;
+  }
+
+  /**
+   * Get mock response suggestions based on target message
+   */
+  private static getMockResponseSuggestions(targetMessage: string): ResponseSuggestion[] {
+    const suggestions = [
+      {
+        id: "resp_1",
+        type: "empathy" as const,
+        content: "I can see that you're feeling frustrated, and I want to understand your perspective better.",
+        rationale: "This response acknowledges emotions and shows willingness to understand",
+        tone: "supportive" as const,
+      },
+      {
+        id: "resp_2",
+        type: "clarification" as const,
+        content: "I think I might have misunderstood something. Can you help me understand what you meant?",
+        rationale: "This prevents escalation by seeking clarity rather than making assumptions",
+        tone: "neutral" as const,
+      },
+      {
+        id: "resp_3",
+        type: "solution" as const,
+        content: "Let's take a step back and figure out how we can work through this together.",
+        rationale: "This focuses on collaborative problem-solving rather than blame",
+        tone: "supportive" as const,
+      },
+      {
+        id: "resp_4",
+        type: "acknowledgment" as const,
+        content: "You're right, and I appreciate you bringing this to my attention.",
+        rationale: "This validates their concern and shows openness to feedback",
+        tone: "neutral" as const,
+      }
+    ];
+
+    // Return a subset based on the message content
+    const isApology = targetMessage.toLowerCase().includes('sorry');
+    const isQuestion = targetMessage.includes('?');
+    const isEmotional = /angry|upset|hurt|sad|frustrated/.test(targetMessage.toLowerCase());
+
+    if (isApology) {
+      return suggestions.filter(s => s.type === 'acknowledgment' || s.type === 'empathy');
+    } else if (isQuestion) {
+      return suggestions.filter(s => s.type === 'clarification' || s.type === 'solution');
+    } else if (isEmotional) {
+      return suggestions.filter(s => s.type === 'empathy' || s.type === 'acknowledgment');
+    }
+
+    return suggestions.slice(0, 3);
+  }
+
+  /**
+   * Get system prompt for AI interactions (mock)
    */
   private static getSystemPrompt(): string {
     return `You are a communication expert and relationship counselor. Your role is to analyze conversations and provide constructive advice that helps people communicate more effectively and build better relationships.
@@ -134,318 +228,108 @@ Never suggest manipulative tactics, aggressive responses, or strategies that cou
   }
 
   /**
-   * Build analysis prompt based on conversation data
-   */
-  private static buildAnalysisPrompt(
-    conversationData: ConversationData,
-    analysisType: string
-  ): string {
-    const basePrompt = `
-Please analyze this conversation and provide constructive insights:
-
-Conversation Text:
-${conversationData.extractedText}
-
-Participants: ${conversationData.participants.join(', ')}
-Overall Tone: ${conversationData.conversationTone.overallTone}
-Emotional Intensity: ${conversationData.conversationTone.emotionalIntensity}/10
-
-Please provide your analysis in the following JSON format:
-{
-  "analysis": "overall analysis of the conversation",
-  "suggestions": [
-    {
-      "type": "empathy|clarification|solution|acknowledgment",
-      "content": "specific suggestion text",
-      "rationale": "explanation of why this would help",
-      "tone": "supportive|neutral|assertive"
-    }
-  ],
-  "insights": [
-    {
-      "category": "pattern|emotion|topic|opportunity",
-      "title": "insight title",
-      "description": "detailed description",
-      "importance": "low|medium|high"
-    }
-  ],
-  "confidence": 0.8
-}
-    `;
-
-    if (analysisType === 'quick') {
-      return basePrompt + '\nProvide a brief analysis focusing on the most important points.';
-    } else if (analysisType === 'suggestions') {
-      return basePrompt + '\nFocus primarily on actionable response suggestions.';
-    }
-
-    return basePrompt + '\nProvide a comprehensive analysis including all aspects.';
-  }
-
-  /**
-   * Parse AI response into structured format
-   */
-  private static parseAIResponse(responseContent: string): AIResponse {
-    try {
-      const parsed = JSON.parse(responseContent);
-      return {
-        analysis: parsed.analysis || 'Analysis completed',
-        suggestions: parsed.suggestions || [],
-        insights: parsed.insights || [],
-        confidence: parsed.confidence || 0.7,
-      };
-    } catch (error) {
-      console.error('Failed to parse AI response:', error);
-      return this.getFallbackResponse();
-    }
-  }
-
-  /**
-   * Provide fallback response when AI fails
+   * Get fallback response when parsing fails
    */
   private static getFallbackResponse(): AIResponse {
     return {
-      analysis: 'Unable to complete full analysis. Please try again.',
-      suggestions: this.getFallbackSuggestions(),
-      insights: [
+      analysis: "I've analyzed your conversation and can see there's room for improved communication. Focus on expressing your feelings clearly while also trying to understand the other person's perspective.",
+      suggestions: [
         {
-          category: 'opportunity',
-          title: 'Communication Analysis',
-          description: 'Consider reviewing the conversation for opportunities to improve understanding.',
-          importance: 'medium',
+          id: "fallback_1",
+          type: "empathy",
+          content: "I understand this is important to you.",
+          rationale: "Acknowledges the other person's feelings",
+          tone: "supportive",
         }
       ],
-      confidence: 0.5,
+      insights: [
+        {
+          id: "fallback_insight",
+          category: "opportunity",
+          title: "Communication Opportunity",
+          description: "There's an opportunity to improve understanding between both parties",
+          importance: "medium",
+        }
+      ],
+      confidence: 0.6,
     };
   }
 
   /**
-   * Provide fallback suggestions when AI fails
+   * Get fallback suggestions when generation fails
    */
   private static getFallbackSuggestions(): ResponseSuggestion[] {
     return [
       {
-        id: 'fallback_1',
-        type: 'clarification',
-        content: 'I want to make sure I understand your perspective correctly...',
-        rationale: 'Seeking clarification shows respect and prevents misunderstandings',
-        tone: 'supportive',
-      },
-      {
-        id: 'fallback_2',
-        type: 'empathy',
-        content: 'I can see this is important to you...',
-        rationale: 'Acknowledging the other person\'s feelings helps build connection',
-        tone: 'supportive',
-      },
-      {
-        id: 'fallback_3',
-        type: 'solution',
-        content: 'How can we work together to resolve this?',
-        rationale: 'Focusing on collaboration encourages problem-solving',
-        tone: 'neutral',
-      },
+        id: "fallback_suggestion",
+        type: "empathy",
+        content: "I can see this is important to you, and I'd like to understand better.",
+        rationale: "Shows empathy and willingness to understand",
+        tone: "supportive",
+      }
     ];
   }
 
   /**
-   * Generate AI response based on communication mode and user style
+   * Mock generate response based on request
    */
   static async generateResponse(request: AIRequest): Promise<AIResponse> {
-    if (!this.openai) {
-      throw new Error('AI Service not initialized. Call initialize() with your API key first.');
-    }
-
-    const systemPrompt = this.getSystemPrompt(request.mode);
-    const userPrompt = this.buildUserPrompt(request);
+    // Mock delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
-    try {
-      const completion = await this.openai.chat.completions.create({
-        model: 'gpt-4',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: request.mode === 'hard_fight' ? 0.8 : 0.7,
-        max_tokens: 1500,
-      });
-
-      const responseContent = completion.choices[0]?.message?.content || '';
-      return this.parseAIResponse(responseContent, request.mode);
-    } catch (error) {
-      console.error('AI response generation failed:', error);
-      throw new Error('Failed to generate AI response');
-    }
+    return {
+      analysis: "Based on your communication style and the context, here's a constructive approach to this situation.",
+      suggestions: this.getMockResponseSuggestions(request.conversationContext),
+      insights: [
+        {
+          id: "context_insight",
+          category: "pattern",
+          title: "Communication Style",
+          description: "Your communication style shows good awareness of emotional dynamics",
+          importance: "medium",
+        }
+      ],
+      confidence: 0.78,
+    };
   }
 
   /**
-   * Analyze user's writing style from text samples
+   * Mock analyze user communication style
    */
   static async analyzeUserStyle(textSamples: string[]): Promise<UserStyleData> {
-    if (!this.openai) {
-      throw new Error('AI Service not initialized');
-    }
-
-    const prompt = `Analyze the following text samples and identify the user's communication style:
-
-${textSamples.map((sample, index) => `Sample ${index + 1}: "${sample}"`).join('\n\n')}
-
-Please analyze and return JSON with this structure:
-{
-  "tone": "professional|casual|formal|friendly|direct|etc",
-  "vocabulary": ["commonly used words or phrases"],
-  "sentenceStructure": "short and direct|elaborate and detailed|conversational|etc",
-  "communicationPreferences": ["preference patterns like asking questions, using humor, etc"]
-}`;
-
-    try {
-      const completion = await this.openai.chat.completions.create({
-        model: 'gpt-4',
-        messages: [
-          { 
-            role: 'system', 
-            content: 'You are a communication style analyst. Analyze text samples to identify writing patterns, tone, and communication preferences.' 
-          },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.3,
-        max_tokens: 800,
-      });
-
-      const responseContent = completion.choices[0]?.message?.content || '';
-      const analyzed = JSON.parse(responseContent);
-      
-      return {
-        textSamples,
-        analyzedPatterns: analyzed,
-        lastUpdated: new Date(),
-      };
-    } catch (error) {
-      console.error('Style analysis failed:', error);
-      return {
-        textSamples,
-        analyzedPatterns: {
-          tone: 'casual',
-          vocabulary: [],
-          sentenceStructure: 'conversational',
-          communicationPreferences: [],
-        },
-        lastUpdated: new Date(),
-      };
-    }
+    // Mock delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    return {
+      primaryTone: "supportive",
+      emotionalIntelligence: 0.75,
+      directness: 0.6,
+      empathy: 0.8,
+      assertiveness: 0.5,
+      adaptability: 0.7,
+      preferredApproach: "collaborative",
+      communicationStrengths: [
+        "Shows empathy and understanding",
+        "Uses clear and direct language",
+        "Seeks to understand others' perspectives"
+      ],
+      areasForImprovement: [
+        "Could be more assertive when needed",
+        "Sometimes overthinks responses"
+      ],
+    };
   }
 
   /**
-   * Get system prompt based on communication mode
-   */
-  private static getSystemPrompt(mode: CommunicationMode): string {
-    if (mode === 'hard_fight') {
-      return `You are a strategic communication expert focused on helping users gain advantage in conversations and arguments. Your role is to analyze conversations and provide tactical advice for:
-
-1. Logical superiority - Finding flaws in opponent's reasoning
-2. Strategic positioning - Maintaining conversational dominance  
-3. Psychological advantage - Understanding power dynamics
-4. Tactical responses - Crafting responses that put the user in control
-
-Provide specific, actionable strategies that help the user maintain the upper hand while appearing reasonable. Focus on winning through superior communication tactics.
-
-Your responses should be:
-- Strategically focused on gaining advantage
-- Psychologically informed about power dynamics
-- Tactically sound for conversational dominance
-- Designed to help the user "win" the interaction
-
-Always maintain plausible deniability and help the user appear reasonable while gaining strategic advantage.`;
-    } else {
-      return `You are a communication expert and relationship counselor. Your role is to analyze conversations and provide constructive advice that helps people communicate more effectively and build better relationships.
-
-Your responses should always be:
-- Empathetic and understanding
-- Focused on improving communication
-- Respectful of all parties involved
-- Aimed at conflict resolution and mutual understanding
-- Supportive of healthy relationship dynamics
-
-Never suggest manipulative tactics, aggressive responses, or strategies that could harm relationships. Always prioritize mutual respect, emotional safety, and constructive dialogue.`;
-    }
-  }
-
-  /**
-   * Build user prompt with context and style adaptation
-   */
-  private static buildUserPrompt(request: AIRequest): string {
-    let prompt = `Input Message/Text: "${request.inputText}"`;
-
-    if (request.conversationContext) {
-      prompt += `\n\nConversation Context:\n${request.conversationContext}`;
-    }
-
-    if (request.previousMessages && request.previousMessages.length > 0) {
-      prompt += `\n\nPrevious Messages:\n`;
-      request.previousMessages.slice(-5).forEach((msg, index) => {
-        prompt += `${msg.type === 'user' ? 'User' : 'Other'}: "${msg.content}"\n`;
-      });
-    }
-
-    if (request.userStyleData) {
-      prompt += `\n\nUser's Communication Style:
-- Tone: ${request.userStyleData.analyzedPatterns.tone}
-- Typical vocabulary: ${request.userStyleData.analyzedPatterns.vocabulary.join(', ')}
-- Sentence structure: ${request.userStyleData.analyzedPatterns.sentenceStructure}
-- Communication preferences: ${request.userStyleData.analyzedPatterns.communicationPreferences.join(', ')}
-
-Please adapt your suggestions to match this user's natural communication style.`;
-    }
-
-    if (request.mode === 'hard_fight') {
-      prompt += `\n\nPlease provide strategic response options that will help me gain advantage in this conversation. Include tactical analysis and power positioning strategies.`;
-    } else {
-      prompt += `\n\nPlease provide constructive response options that will improve communication and understanding in this situation.`;
-    }
-
-    prompt += `\n\nReturn your response in JSON format:
-{
-  "response": "main analysis or suggested response",
-  "suggestions": ["alternative response 1", "alternative response 2", "alternative response 3"],
-  "confidence": 0.8
-}`;
-
-    return prompt;
-  }
-
-  /**
-   * Generate conversation summary for context management
+   * Mock generate conversation summary
    */
   static async generateConversationSummary(messages: Message[]): Promise<string> {
-    if (!this.openai || messages.length === 0) {
-      return '';
-    }
-
-    const conversationText = messages
-      .map(msg => `${msg.type}: ${msg.content}`)
-      .join('\n');
-
-    const prompt = `Summarize this conversation in 2-3 sentences, focusing on the main topics and communication dynamics:
-
-${conversationText}
-
-Provide a concise summary that captures the key points and emotional tone.`;
-
-    try {
-      const completion = await this.openai.chat.completions.create({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: 'You are a conversation analyst. Provide concise, accurate summaries.' },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.3,
-        max_tokens: 200,
-      });
-
-      return completion.choices[0]?.message?.content || '';
-    } catch (error) {
-      console.error('Summary generation failed:', error);
-      return `Conversation with ${messages.length} messages about various topics.`;
-    }
+    // Mock delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    const messageCount = messages.length;
+    const participants = [...new Set(messages.map(m => m.sender))];
+    
+    return `This conversation involved ${participants.length} participant(s) with ${messageCount} messages. The discussion covered important topics with opportunities for improved understanding and communication.`;
   }
 } 
